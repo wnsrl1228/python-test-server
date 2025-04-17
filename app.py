@@ -8,14 +8,14 @@
         },
     );
 
-    단일 이미지 : http://localhost:8080/api/iiif/v2/kmManifests/1839984/manifest.json
-    복수 이미지 : http://localhost:8080/api/iiif/v2/kmManifests/2078933/manifest.json
+    단일 이미지 : http://localhost:5000/api/iiif/v2/kmManifests/1839984/manifest.json
+    복수 이미지 : http://localhost:5000/api/iiif/v2/kmManifests/2078933/manifest.json
 
-    단일 pdf : http://localhost:8080/api/iiif/v2/kmManifests/2033403/manifest.json
-    복수 pdf : http://localhost:8080/api/iiif/v2/kmManifests/1734727/manifest.json
+    단일 pdf : http://localhost:5000/api/iiif/v2/kmManifests/2033403/manifest.json
+    복수 pdf : http://localhost:5000/api/iiif/v2/kmManifests/1734727/manifest.json
 
-    음원 : http://localhost:8080/api/iiif/v2/kmManifests/2032438/manifest.json
-    영상 : http://localhost:8080/api/iiif/v2/kmManifests/2031015/manifest.json
+    음원 : http://localhost:5000/api/iiif/v2/kmManifests/2032438/manifest.json
+    영상 : http://localhost:5000/api/iiif/v2/kmManifests/2031015/manifest.json
 """
 from flask import Flask, request, jsonify, redirect, send_file
 import os
@@ -40,14 +40,16 @@ from pdfManifest import PdfManifest
 from audioManifest import AudioManifest
 from videoManifest import VideoManifest
 
+from oldDocumentsManifest import OldDocumentsManifest
+
 app = Flask(__name__)
 CORS(app)  # CORS 설정 추가
 
 # manifest 요청
-@app.route('/api/iiif/v2/kmManifests/<string:identifier>/manifest.json', methods=['GET'])
+@app.route('/api/iiif/presentation/v3/<string:identifier>/manifest.json', methods=['GET'])
 def request_km_manifest(identifier):
     
-    json_data = ''
+    # json_data = OldDocumentsManifest.MANIFEST2
     if identifier == '1839984':  # 단일 이미지
         json_data = ImageManifest.MANIFEST
     elif identifier == '2078933': # 복수 이미지
@@ -60,6 +62,11 @@ def request_km_manifest(identifier):
         json_data = AudioManifest.MANIFEST
     elif identifier == '2031015': # 영상
         json_data = VideoManifest.MANIFEST
+        
+    # elif identifier == '111': # 고문헌 건이 하나인 경우
+    #     json_data = OldDocumentsManifest.MANIFEST1
+    # elif identifier == '222': # 고문헌 건이 여러개인 경우
+    #     json_data = OldDocumentsManifest.MANIFEST2
 
 
     ###############################################
@@ -74,8 +81,8 @@ def request_km_manifest(identifier):
     return response
 
 # 이미지 요청
-@app.route('/api/iiif/v2/kmImages/<string:identifier>/<string:region>/<string:size>/<string:rotation>/<string:quality>.<string:format>', methods=['GET'])
-def iiif_view_km_image(identifier, region, size, rotation, quality, format):
+@app.route('/api/iiif/images/v3/<string:identifier>/<string:region>/<string:size>/<string:rotation>/<string:quality>.<string:format>', methods=['GET'])
+def iiif_view_km_image(identifier, region, size, rotation, quality, format):\
 
     f = safe_decode(identifier)
     arr_file = f.split("::")
@@ -125,14 +132,14 @@ def iiif_view_km_file(identifier):
 
 
 # 첫 번째 요청 - Redirect 처리 : 이미지 정보 요청
-@app.route('/api/iiif/v2/kmImages/<string:identifier>', methods=['GET'])
+@app.route('/api/iiif/images/v3/<string:identifier>', methods=['GET'])
 def redirect_image_info(identifier):
     domain = request.host_url.rstrip('/')
     redirect_url = f"{domain}{request.path}/info.json"
     return redirect(redirect_url, code=303)  # HTTP 303 See Other
 
 # 두 번째 요청 - Image Info 처리 : 이미지 정보 요청
-@app.route('/api/iiif/v2/kmImages/<string:identifier>/info.json', methods=['GET'])
+@app.route('/api/iiif/images/v3/<string:identifier>/info.json', methods=['GET'])
 def iiif_view_km_image_info(identifier):
     # 실제 처리 로직 추가 필요
     
@@ -159,35 +166,25 @@ def iiif_view_km_image_info(identifier):
 
 
     data = {
-        "@context": "http://iiif.io/api/image/2/context.json",
-        "@id": "http://localhost:8080/api/iiif/v2/kmImages/OjppdGVtOjpmMjAyNDExMjdteFNRLnBuZzo67Iqk7YGs66aw7IO3IDIwMjMtMDMtMDYgMDAyOTA0LnBuZw==",
-        "@type": "iiif:Image",
+        "@context": "http://iiif.io/api/image/3/context.json",
+        "id": "http://localhost:5000/api/iiif/images/v3/OjppdGVtOjpmMjAyNDA2MjBQMnlwLnBuZzo67J207ZiE7IS4IOy0iOq4sCDsnpHtkojsnbQg67O07Jes7KO864qUIO2YgeyLoOyEsS5wbmc=",
+        "type": "ImageService3",
         "protocol": "http://iiif.io/api/image",
-        "profile": [
-            "http://iiif.io/api/image/2/level0.json",
-            {
-            "formats": [
-                format_code
-            ],
-            "qualities": [
-                "default"
-            ],
-            "supports": [
-                "sizeByWhListed",
-                "baseUriRedirect",
-                "cors",
-                "jsonldMediaType"
-            ]
-            }
+        "profile": "level0",
+        "width": 1439,
+        "height": 2220,
+        "extraFormats": [
+            "png",
+            "jpg"
         ],
-        "sizes": [
-            {
-            "width": width,
-            "height": height
-            }
+        "extraQualities": [
+            "default"
         ],
-        "width": width,
-        "height": height
+        "tiles" : [ {
+            "height" : 1439,
+            "width" : 2220,
+            "scaleFactors" : [1]
+        } ]
     }
     return jsonify(data)  # JSON 형태로 응답
 
@@ -204,6 +201,7 @@ def safe_decode(encoded_str):
     return decoded_bytes.decode('utf-8')
 
 
+
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
-    # app.run(debug=True,  port=5000)
+    # app.run(debug=True, port=5000)
+    app.run(debug=True,  port=5000)

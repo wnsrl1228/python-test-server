@@ -1,49 +1,98 @@
 class AudioManifest:
     MANIFEST = {
-    "@context": [
-      "http://wellcomelibrary.org/ld/ixif/0/context.json",
-      "http://iiif.io/api/presentation/2/context.json"
-    ],
-    "@id": "http://localhost:8080/api/iiif/v2/kmManifests/2032438/manifest.json",
-    "@type": "sc:Manifest",
-    "label": "",
-    "metadata": [
-      {
-        "label": "제목",
-        "value": ""
-      },
-      {
-        "label": "발행자",
-        "value": "랜드소프트 [제작]"
-      },
-      {
-        "label": "설명",
-        "value": "김소월 시 『개미』를 낭송한 음원자료"
-      },
-      {
-        "label": "발행일자",
-        "value": "--------"
-      }
-    ],
-    "sequences": [
-      
-    ],
-    "mediaSequences": [
-      {
-        "@id": "http://localhost:8080/api/iiif/v2/manifests/2032438/xsequence/s0",
-        "@type": "ixif:MediaSequence",
-        "elements": [
-          {
-            "@id": "http://localhost:8080/viewer/f20240206EJEr.mp3",
-            "@type": "dctypes:Sound",
-            "format": "audio/mp3",
-            "thumbnail": "http://localhost:8080/api/iiif/v2/kmImages/Ojpjb2xsZWN0aW9uOjpmMjAyNDAyMTZHUWY1LmpwZzo67J2M7ISxX-yNuOuEpOydvF8wMV_qsJzrr7guanBn/full/max/0/default.jpg",
-            "rendering": {
-              "@id": "http://localhost:8080/viewer/f20240206EJEr.mp3",
-              "format": "audio/mp3"
-            }
-          }
+    "@context": "http://iiif.io/api/presentation/3/context.json",
+    "id": "http://localhost:8080/api/iiif/presentation/v3/2032438/manifest.json",
+    "type": "Manifest",
+    "label": {
+        "@none": [
+            ""
         ]
-      }
+    },
+    "metadata": [
+        {
+            "label": {
+                "@none": [
+                    "서명"
+                ]
+            },
+            "value": {
+                "@none": [
+                    ""
+                ]
+            }
+        },
+        {
+            "label": {
+                "@none": [
+                    "저자"
+                ]
+            },
+            "value": {
+                "@none": [
+                    "김소월(기타)"
+                ]
+            }
+        },
+        {
+            "label": {
+                "@none": [
+                    "발행일"
+                ]
+            },
+            "value": {
+                "@none": [
+                    "--------"
+                ]
+            }
+        },
+        {
+            "label": {
+                "@none": [
+                    "발행자"
+                ]
+            },
+            "value": {
+                "@none": [
+                    "랜드소프트 [제작]"
+                ]
+            }
+        },
+        {
+            "label": {
+                "@none": [
+                    "저작권유형"
+                ]
+            },
+            "value": {
+                "@none": [
+                    "<img src=\"/resource/templete/manpa/img/common/img_ccl_opentype06.png\" alt=\"6 유형\" style=\"height:50px;margin:5px;\" class=\"img_ccl\">"
+                ]
+            }
+        }
+    ],
+    "items": [
+        {
+            "id": "http://localhost:8080/api/iiif/presentation/v3/2032438/canvas/p1",
+            "type": "Canvas",
+            "items": [
+                {
+                    "id": "http://localhost:8080/api/iiif/presentation/v3/2032438/canvas/p1/page/p1",
+                    "type": "AnnotationPage",
+                    "items": [
+                        {
+                            "id": "http://localhost:8080/api/iiif/presentation/v3/2032438/canvas/p1/annotation/p1",
+                            "type": "Annotation",
+                            "motivation": "painting",
+                            "body": {
+                                "id": "http://localhost:8080/viewer/f20240206EJEr.mp3",
+                                "type": "Sound",
+                                "format": "audio/mp3"
+                            },
+                            "target": "http://localhost:8080/api/iiif/presentation/v3/2032438/canvas/p1"
+                        }
+                    ]
+                }
+            ]
+        }
     ]
-  }
+}
